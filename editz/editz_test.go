@@ -3,6 +3,7 @@ package editz
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"testing"
 
 	"github.com/ibrt/golang-bites/filez"
@@ -132,14 +133,18 @@ func TestEdit_Err_Panic(t *testing.T) {
 
 func TestShellEditor(t *testing.T) {
 	filez.WithMustWriteTempFile("golang-edit-prompt", []byte(testContents), func(filePath string) {
+		params := []string{
+			"sed",
+			"-i",
+		}
+
+		if runtime.GOOS == "darwin" {
+			params = append(params, ".bak")
+		}
+
 		e := &ShellEditor{
 			Command: "/usr/bin/env",
-			Params: []string{
-				"sed",
-				"-i",
-				".bak",
-				fmt.Sprintf("s/%v/%v/", testContents, testChangedContents),
-			},
+			Params:  append(params, fmt.Sprintf("s/%v/%v/", testContents, testChangedContents)),
 		}
 		e.Edit(filePath)
 		require.Equal(t, testChangedContents, string(filez.MustReadFile(filePath)))
