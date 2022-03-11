@@ -5,6 +5,26 @@
 
 Run visudo-like text editing prompts from a Go CLI program.
 
+### Basic Example
+
+```go
+package main
+
+import (
+    "github.com/ibrt/golang-edit-prompt/editz"
+)
+
+func main() {
+    err := editz.Edit("hello.txt", func(contents []byte) error {
+        // inspect the changed contents, return nil if OK, error otherwise
+        return nil
+    })
+    if err != nil {
+        panic(err)
+    }
+}
+```
+
 ### Developers
 
 Contributions are welcome, please check in on proposed implementation before sending a PR. You can validate your changes using the `./test.sh` script.
