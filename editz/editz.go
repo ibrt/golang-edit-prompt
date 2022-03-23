@@ -78,7 +78,7 @@ func getDefaultEditor() *ShellEditor {
 // The function returns the contents of the file after editing and a flag indicating whether there were changes.
 func Edit(filePath string, validateFunc func([]byte) error) (contents []byte, isChanged bool, err error) {
 	defer func() {
-		if rErr := errorz.MaybeWrapRecover(recover()); rErr != nil {
+		if rErr := errorz.MaybeWrapRecover(recover(), errorz.SkipPackage()); rErr != nil {
 			contents = nil
 			isChanged = false
 			err = errorz.Unwrap(rErr)
@@ -86,7 +86,7 @@ func Edit(filePath string, validateFunc func([]byte) error) (contents []byte, is
 	}()
 
 	stat, err := os.Stat(filePath)
-	errorz.MaybeMustWrap(err)
+	errorz.MaybeMustWrap(err, errorz.SkipPackage())
 	origBuf := filez.MustReadFile(filePath)
 
 	filez.WithMustWriteTempFile("golang-edit-prompt", origBuf, func(tmpFilePath string) {
@@ -98,8 +98,8 @@ func Edit(filePath string, validateFunc func([]byte) error) (contents []byte, is
 			return
 		}
 
-		errorz.MaybeMustWrap(validateFunc(newBuf))
-		errorz.MaybeMustWrap(ioutil.WriteFile(filePath, newBuf, stat.Mode()))
+		errorz.MaybeMustWrap(validateFunc(newBuf), errorz.SkipPackage())
+		errorz.MaybeMustWrap(ioutil.WriteFile(filePath, newBuf, stat.Mode()), errorz.SkipPackage())
 
 		contents = newBuf
 		isChanged = true

@@ -3,9 +3,9 @@ module github.com/ibrt/golang-edit-prompt
 go 1.17
 
 require (
-	github.com/ibrt/golang-bites v1.5.0
-	github.com/ibrt/golang-errors v1.0.0
-	github.com/ibrt/golang-shell v1.0.0
+	github.com/ibrt/golang-bites v1.7.0
+	github.com/ibrt/golang-errors v1.1.3
+	github.com/ibrt/golang-shell v1.0.2
 	github.com/stretchr/testify v1.7.0
 )
 
